@@ -63,32 +63,40 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 	setInterval(() => {
 		let a: Donation = {
 			id: randomUUID(),
-			donor_name: "test",
-			amountDisplay: 112.10,
+			donor_name: "Jacqueline Swampert Test",
+			amountDisplay: 5.10,
 		}
 		eventQueue.enqueue(a);
 		nodecg.sendMessage("updatequeue");
+		queuedDonationsRep.value = [...eventQueue]
 	}, 10000);
 
-	processDunks(nodecg);
+	processDunks(queuedDonationsRep, usedDonationIdsRep);
 
 	nodecg.listenFor("updatequeue", () => {
+		console.log("hitting here:", [...eventQueue])
 		queuedDonationsRep.value = [...eventQueue]
 	})
 
 };
 
-async function processDunks(nodecg: NodeCG.ServerAPI) {
-    if (eventQueue.size() != 0) {
-        await processNext();
-		// event to update queue replicant
-		nodecg.sendMessage("updatequeue");
-    }
-    setTimeout(processDunks, 100);
+async function processDunks(queuedDonationsRep: NodeCG.ServerReplicant<Array<Donation>>, usedDonationIdsRep: NodeCG.ServerReplicant<Array<string>>) {
+	while (true) {
+ 		if (eventQueue.size() != 0) {
+    		const donation = eventQueue.peek();
+ 	    	await processNext(donation);
+			// event to update queue replicant
+			//nodecg?.sendMessage("updatequeue");
+    		eventQueue.dequeue();
+			queuedDonationsRep.value = [...eventQueue];
+			usedDonationIdsRep.value = [...usedDonationIdsRep?.value ?? [], donation.id];
+ 		}
+		await sleep(100);
+	}
+    //setTimeout(processDunks, 100, [nodecg, usedDonationIdsRep]);
 }
 
-async function processNext() {
-    const event = eventQueue.peek();
+async function processNext(event: Donation) {
 	if (event == undefined) {
 		return;
 	}
@@ -114,7 +122,6 @@ async function processNext() {
     // set pin high (water stops)
     solenoidCtrl.writeSync(1);
     console.log(`Water for ${event.donor_name} finished dispensing`);
-    eventQueue.dequeue();
 }
 
 async function timer(time: number, fn: (time: number) => void, step: number) {
@@ -123,4 +130,8 @@ async function timer(time: number, fn: (time: number) => void, step: number) {
         await new Promise(r => setTimeout(r, step * MS_PER_S));
         return await timer(Math.max(time - step, 0.0), fn, step);
     }
+}
+
+async function sleep(time: number) {
+	return new Promise(r => setTimeout(r, time));
 }
