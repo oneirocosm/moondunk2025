@@ -1,28 +1,38 @@
-import type NodeCG from '@nodecg/types';
+import type NodeCG from 'nodecg/types';
 import type {Donation} from "../types/donation";
 import "dotenv/config";
-import Queue from "yocto-queue";
+import {Queue} from "elegant-queue";
+import {randomUUID} from "crypto";
 
-let Gpio;
-if (process.env.MOONDUNK_DEBUG === "true") {
-    Gpio = require("./debug-tools").Gpio;
-} else {
-    Gpio = require("onoff").Gpio;
+import GpioDebug from "./debug-tools"
+
+let Gpio = GpioDebug;
+if (process.env["MOONDUNK_DEBUG"] !== "false") {
+	async function install() {
+		try{
+			const GpioActual = await import("onoff");
+			// @ts-ignore
+			Gpio = GpioActual
+		} catch (e) {
+			console.log("could not use onoff library")
+		}
+	}
+	install();
 }
 
 // you can change this stuff for setup
-const WATER_RATE = parseFloat(process.env.MOONDUNK_RATE as string ?? "1"); // estimated gallons_per_second
-const BUCKET_VOLUME = parseFloat(process.env.MOONDUNK_VOLUME as string ?? "1"); // estemated gallons
-const DOLLAR_GOAL = parseFloat(process.env.MOONDUNK_GOAL as string ?? "1"); // estimated USD per dunk
+const WATER_RATE = parseFloat(process.env["MOONDUNK_RATE"] as string ?? "1"); // estimated gallons_per_second
+const BUCKET_VOLUME = parseFloat(process.env["MOONDUNK_VOLUME"] as string ?? "1"); // estemated gallons
+const DOLLAR_GOAL = parseFloat(process.env["MOONDUNK_GOAL"] as string ?? "1"); // estimated USD per dunk
 
 // but don't change these unless something has gone very wrong
 const TIME_PER_DOLLAR = BUCKET_VOLUME / (WATER_RATE * DOLLAR_GOAL);
 const MS_PER_S = 1000.0;
 
 const eventQueue = new Queue<Donation>();
-const solenoidCtrl = new Gpio(Number(process.env.MOONDUNK_PIN), 'out');
+const solenoidCtrl = new Gpio(Number(process.env["MOONDUNK_PIN"]), 'out');
 
-module.exports = async function (nodecg: NodeCG.ServerAPI) {
+export default async function (nodecg: NodeCG.ServerAPI) {
 	nodecg.log.info("Hello, from your bundle's extension!");
 	nodecg.log.info("I'm where you put all your server-side code.");
 	nodecg.log.info(
@@ -50,6 +60,16 @@ module.exports = async function (nodecg: NodeCG.ServerAPI) {
 		nodecg.sendMessage("updatequeue");
 	});
 
+	setInterval(() => {
+		let a: Donation = {
+			id: randomUUID(),
+			donor_name: "test",
+			amountDisplay: 112.10,
+		}
+		eventQueue.enqueue(a);
+		nodecg.sendMessage("updatequeue");
+	}, 10000);
+
 	processDunks(nodecg);
 
 	nodecg.listenFor("updatequeue", () => {
@@ -59,7 +79,7 @@ module.exports = async function (nodecg: NodeCG.ServerAPI) {
 };
 
 async function processDunks(nodecg: NodeCG.ServerAPI) {
-    if (eventQueue.size != 0) {
+    if (eventQueue.size() != 0) {
         await processNext();
 		// event to update queue replicant
 		nodecg.sendMessage("updatequeue");

@@ -1,26 +1,27 @@
 import Button from '@mui/material/Button';
 import exampleImage from './image.png';
 import { useReplicant } from '@nodecg/react-hooks';
-import { ExampleReplicant } from '../../types/generated';
+import { Donation } from '../../types/donation';
 import { DashboardThemeProvider } from './components/DashboardThemeProvider';
 
 import { render } from '../render';
 
 const App = () => {
-  const [exampleReplicant, setExampleReplicant] =
-    useReplicant<ExampleReplicant>('exampleReplicant');
+  const [queuedDonations, _] = useReplicant<Array<Donation>>('queueddonations');
+
 
   return (
     <DashboardThemeProvider>
       <img src={exampleImage} />
-      <p>Current example replicant value: {exampleReplicant?.exampleProperty}</p>
-      <Button
-        variant="contained"
-        onClick={() => {
-          setExampleReplicant({ exampleProperty: Date.now().toString() });
-        }}>
-        <b>Test button (updates the replicant with current date)</b>
-      </Button>
+      {queuedDonations?.map((donation: Donation) => <div style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+      }}>
+        <span>{donation.donor_name}</span>
+        <span>{donation.amountDisplay}</span>
+      </div>)}
+      <span>asdfs</span>
     </DashboardThemeProvider>
   );
 };

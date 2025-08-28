@@ -5,10 +5,16 @@
     "outDir": "extension",
     "target": "ES2016",
     "moduleResolution": "Node",
-    "module": "CommonJS",
+    "module": "es2022",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
+  },
+  "ts-node": {
+    "esm": true,
+    "compilerOptions": {
+      "module": "es2022"
+    }
   },
   "include": ["src/extension/**/*.ts", "src/types/**/*.d.ts"]
 }
