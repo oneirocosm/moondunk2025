@@ -80,6 +80,11 @@
         "file": "example.html",
         "width": 1920,
         "height": 1080
+      },
+      {
+        "file": "queue.html",
+        "width": 369,
+        "height": 485
       }
     ]
   }

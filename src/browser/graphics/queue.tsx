@@ -1,7 +1,5 @@
-import Button from '@mui/material/Button';
 import { useReplicant } from '@nodecg/react-hooks';
 import { Donation } from '../../types/donation';
-import { DashboardThemeProvider } from './components/DashboardThemeProvider';
 import React from "react";
 import Countdown from "react-countdown";
 import { motion, AnimatePresence } from 'framer-motion';
@@ -77,16 +75,16 @@ const App = () => {
 
 
   return (
-    <DashboardThemeProvider>
       <div style={{
-        backgroundColor: MOONSHOT_CORE_DARK,
-        width: "100%",
-        maxWidth: "400px",
-        minHeight: "200px",
+        background: `${MOONSHOT_CORE_DARK}`,
+        width: "369px",
+        height: "485px",
+        overflowY: "hidden",
         padding: "14px",
-        borderRadius: "10px",
         border: `solid 3px ${MOONSHOT_CORE_YELLOW}`,
         fontFamily: "Exo2",
+        color: "white",
+        margin: 0,
       }}>
       <div style={{
         display: "flex",
@@ -103,12 +101,12 @@ const App = () => {
 
         }}>Donor</span>
         <span style={{
-          width: "80px",
+          width: "90px",
           minWidth: "80px",
           flex: "0 0 80px",
         }}>Amount</span>
         <span style={{
-          width: "80px",
+          width: "90px",
           minWidth: "80px",
           flex: "0 0 80px",
         }}>Time</span>
@@ -149,14 +147,14 @@ const App = () => {
             flexGrow: 1,
           }}>{dispensing.donor_name}</span>
           <span style={{
-            minWidth: "80px",
-            width: "80px",
-            flex: "0 0 80px",
+            minWidth: "90px",
+            width: "90px",
+            flex: "0 0 90px",
           }}>${dispensing.amountDisplay.toFixed(2)}</span>
           <span style={{
-            minWidth: "80px",
-            width: "80px",
-            flex: "0 0 80px",
+            minWidth: "90px",
+            width: "90px",
+            flex: "0 0 90px",
             fontVariantNumeric: "tabular-nums",
           }}>{dispensingCountdown}</span>
         </motion.div>
@@ -193,14 +191,14 @@ const App = () => {
             flexGrow: 1,
           }}>{donation.donor_name}</span>
           <span style={{
-            minWidth: "80px",
-            width: "80px",
-            flex: "0 0 80px",
+            minWidth: "90px",
+            width: "90px",
+            flex: "0 0 90px",
           }}>${donation.amountDisplay.toFixed(2)}</span>
           <span style={{
-            minWidth: "80px",
-            width: "80px",
-            flex: "0 0 80px",
+            minWidth: "90px",
+            width: "90px",
+            flex: "0 0 90px",
             fontVariantNumeric: "tabular-nums",
           }}>{time.toFixed(2)}s</span>
         </motion.div>
@@ -208,7 +206,6 @@ const App = () => {
         })}</AnimatePresence>
       </div>
       </div>
-    </DashboardThemeProvider>
   );
 };
 

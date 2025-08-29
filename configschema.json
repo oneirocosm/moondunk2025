@@ -4,19 +4,19 @@
   "additionalProperties": false,
   "properties": {
     "MOONDUNK_RATE": {
-      "type": "string"
+      "type": "number"
     },
     "MOONDUNK_VOLUME": {
-      "type": "string"
+      "type": "number"
     },
     "MOONDUNK_GOAL": {
-      "type": "string"
+      "type": "number"
     },
     "MOONDUNK_PIN": {
-      "type": "string"
+      "type": "number"
     },
     "MOONDUNK_DEBUG": {
-      "type": "string"
+      "type": "boolean"
     }
   },
   "required": []

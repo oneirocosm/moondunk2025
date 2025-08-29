@@ -50,7 +50,7 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 		let a: Donation = {
 			id: randomUUID(),
 			donor_name: randomUUID(),
-			amountDisplay: 5.10,
+			amountDisplay: 25.10,
 		}
 		eventQueue.enqueue(a);
 		nodecg.sendMessage("updatequeue");
@@ -123,11 +123,11 @@ async function sleep(time: number) {
 }
 
 async function load(nodecg: NodeCG.ServerAPI) {
-	WATER_RATE = parseFloat(nodecg.bundleConfig["MOONDUNK_RATE"] as string ?? "1"); // estimated gallons_per_second
-	BUCKET_VOLUME = parseFloat(nodecg.bundleConfig["MOONDUNK_VOLUME"] as string ?? "1"); // estemated gallons
-	DOLLAR_GOAL = parseFloat(nodecg.bundleConfig["MOONDUNK_GOAL"] as string ?? "1"); // estimated USD per dunk
+	WATER_RATE = nodecg.bundleConfig["MOONDUNK_RATE"] as number ?? 1; // estimated gallons_per_second
+	BUCKET_VOLUME = nodecg.bundleConfig["MOONDUNK_VOLUME"] as number ?? 1; // estemated gallons
+	DOLLAR_GOAL = nodecg.bundleConfig["MOONDUNK_GOAL"] as number ?? 1; // estimated USD per dunk
 	TIME_PER_DOLLAR = BUCKET_VOLUME / (WATER_RATE * DOLLAR_GOAL);
-	if (nodecg.bundleConfig["MOONDUNK_DEBUG"] === "true") {
+	if (!(nodecg.bundleConfig["MOONDUNK_DEBUG"] ?? false)) {
 		try{
 			const GpioActual = await import("onoff");
 			// @ts-ignore
@@ -136,5 +136,5 @@ async function load(nodecg: NodeCG.ServerAPI) {
 			console.log("could not use onoff library")
 		}
 	}
-	solenoidCtrl = new Gpio(Number(nodecg.bundleConfig["MOONDUNK_PIN"]), 'out');
+	solenoidCtrl = new Gpio(nodecg.bundleConfig["MOONDUNK_PIN"] as number, 'out');
 }

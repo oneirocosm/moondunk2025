@@ -7,9 +7,9 @@
  */
 
 export interface Configschema {
-	MOONDUNK_RATE?: string;
-	MOONDUNK_VOLUME?: string;
-	MOONDUNK_GOAL?: string;
-	MOONDUNK_PIN?: string;
-	MOONDUNK_DEBUG?: string;
+	MOONDUNK_RATE?: number;
+	MOONDUNK_VOLUME?: number;
+	MOONDUNK_GOAL?: number;
+	MOONDUNK_PIN?: number;
+	MOONDUNK_DEBUG?: boolean;
 }
