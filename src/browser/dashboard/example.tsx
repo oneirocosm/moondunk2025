@@ -6,6 +6,7 @@ import React from "react";
 import Countdown from "react-countdown";
 import { motion, AnimatePresence } from 'framer-motion';
 import { render } from '../render';
+import './css/style.css';
 
 const MOONSHOT_CORE_DARK = '#040328';
 const MOONSHOT_CORE_PINK = '#D50078';
@@ -81,9 +82,11 @@ const App = () => {
         backgroundColor: MOONSHOT_CORE_DARK,
         width: "100%",
         maxWidth: "400px",
+        minHeight: "200px",
         padding: "14px",
         borderRadius: "10px",
         border: `solid 3px ${MOONSHOT_CORE_YELLOW}`,
+        fontFamily: "Exo2",
       }}>
       <div style={{
         display: "flex",
@@ -91,8 +94,9 @@ const App = () => {
         justifyContent: "flex-end",
         fontWeight: 600,
         gap: "10px",
-        borderBottom: "solid 3px white",
+        borderBottom: `solid 3px ${MOONSHOT_CORE_YELLOW}`,
         marginBottom: "10px",
+        color: MOONSHOT_CORE_YELLOW,
       }}>
         <span style={{
           flex: "1 1 auto",
@@ -153,6 +157,7 @@ const App = () => {
             minWidth: "80px",
             width: "80px",
             flex: "0 0 80px",
+            fontVariantNumeric: "tabular-nums",
           }}>{dispensingCountdown}</span>
         </motion.div>
         </motion.div>
@@ -196,6 +201,7 @@ const App = () => {
             minWidth: "80px",
             width: "80px",
             flex: "0 0 80px",
+            fontVariantNumeric: "tabular-nums",
           }}>{time.toFixed(2)}s</span>
         </motion.div>
         </motion.div>

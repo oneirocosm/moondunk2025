@@ -55,7 +55,7 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 		eventQueue.enqueue(a);
 		nodecg.sendMessage("updatequeue");
 		queuedDonationsRep.value = [...eventQueue];
-	}, 4000);
+	}, 10000);
 
 	processDunks(queuedDonationsRep, usedDonationIdsRep);
 
