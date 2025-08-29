@@ -1,5 +1,4 @@
 import Button from '@mui/material/Button';
-import exampleImage from './image.png';
 import { useReplicant } from '@nodecg/react-hooks';
 import { Donation } from '../../types/donation';
 import { DashboardThemeProvider } from './components/DashboardThemeProvider';
@@ -11,50 +10,65 @@ const App = () => {
 
   return (
     <DashboardThemeProvider>
-      <img src={exampleImage} />
       <div style={{
         display: "flex",
         flexDirection: "row",
-        justifyContent: "space-between",
-        width: "400px",
+        justifyContent: "flex-end",
+        width: "100%",
+        maxWidth: "400px",
         fontWeight: 600,
+        gap: "10px",
+        borderBottom: "solid 3px white",
+        marginBottom: "2px",
       }}>
         <span style={{
+          flex: "1 1 auto",
 
         }}>Donor</span>
         <span style={{
           width: "80px",
           minWidth: "80px",
+          flex: "0 0 80px",
         }}>Donation</span>
         <span style={{
           width: "80px",
           minWidth: "80px",
+          flex: "0 0 80px",
         }}>Time</span>
       </div>
-      {queuedDonations?.map((donation: Donation) => {
-
-        return <div key={`donation-row-${donation.id}`} style={{
+      <div style={{
         display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        width: "400px",
+        flexDirection: "column"
       }}>
-        <span style={{
-          textOverflow: "ellipsis",
-          overflowX: "hidden",
-          whiteSpace: "nowrap",
-          flexGrow: 1,
-        }}>{donation.donor_name}</span>
-        <span style={{
-          minWidth: "80px",
-          width: "80px",
-        }}>${donation.amountDisplay.toFixed(2)}</span>
-        <span style={{
-          minWidth: "80px",
-          width: "80px",
-        }}>${donation.amountDisplay.toFixed(2)}</span>
+        {queuedDonations?.map((donation: Donation) => {
+
+          return <div key={`donation-row-${donation.id}`} style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "flex-end",
+          gap: "10px",
+          width: "100%",
+          maxWidth: "400px",
+        }}>
+          <span style={{
+            textOverflow: "ellipsis",
+            overflowX: "hidden",
+            whiteSpace: "nowrap",
+            flexGrow: 1,
+          }}>{donation.donor_name}</span>
+          <span style={{
+            minWidth: "80px",
+            width: "80px",
+            flex: "0 0 80px",
+          }}>${donation.amountDisplay.toFixed(2)}</span>
+          <span style={{
+            minWidth: "80px",
+            width: "80px",
+            flex: "0 0 80px",
+          }}>${donation.amountDisplay.toFixed(2)}</span>
+        </div>
+        })}
       </div>
-      })}
     </DashboardThemeProvider>
   );
 };
