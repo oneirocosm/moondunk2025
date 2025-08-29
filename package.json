@@ -27,6 +27,7 @@
     "@nodecg/react-hooks": "^1.0.3",
     "dotenv": "^17.2.1",
     "elegant-queue": "^1.0.8",
+    "framer-motion": "^12.23.12",
     "lodash": "^4.17.21",
     "nodecg": "^2.5.3",
     "onoff": "^6.0.3",

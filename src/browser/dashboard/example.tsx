@@ -4,20 +4,61 @@ import { Donation } from '../../types/donation';
 import { DashboardThemeProvider } from './components/DashboardThemeProvider';
 import React from "react";
 import Countdown from "react-countdown";
+import { motion, AnimatePresence } from 'framer-motion';
 
 import { render } from '../render';
+
+const initRowItem = {
+  opacity: 0,
+  y: 16,
+  scale: 0.98,
+  filter: 'blur(4px)',
+};
+const animateRowItem = {
+  opacity: 1,
+  y: 0,
+  scale: 1,
+  filter: 'blur(0px)',
+};
+const exitRowItem = {
+  opacity: 0,
+  y: -16,
+  scale: 0.98,
+  filter: 'blur(4px)',
+};
+const transitionRowItem = {
+  duration: 0.3,
+  ease: "easeOut",
+};
+
 
 const App = () => {
   const [queuedDonations, _] = useReplicant<Array<Donation>>('queueddonations');
   const [dispensing, setDispensing] = React.useState<Donation | undefined>(undefined);
+  const [nondispensing, setNondispensing] = React.useState<Array<Donation>>([]);
 
   React.useEffect(() => {
     if (queuedDonations == undefined || queuedDonations.length == 0) {
       setDispensing(undefined);
+      setNondispensing([]);
       return;
     }
     setDispensing(queuedDonations[0]);
+    setNondispensing(queuedDonations.slice(1));
   }, [queuedDonations]);
+
+  const dispensingCountdown = React.useMemo(() => {
+    if (dispensing == undefined) {
+      return <></>
+    }
+    return <Countdown 
+      date={Date.now() + donationToSeconds(dispensing.amountDisplay)*1000}
+      intervalDelay={0}
+      precision={2}
+      renderer={(props) => <span>{(Math.floor(props.total) / 1000).toFixed(2)}s</span>}
+    />
+
+  }, [dispensing?.id])
 
 
 
@@ -53,15 +94,21 @@ const App = () => {
         display: "flex",
         flexDirection: "column"
       }}>
+        <AnimatePresence>
         {
-          dispensing && <div key={`donation-row-${dispensing.id}`} style={{
+          dispensing && <motion.div key={`donation-row-${dispensing.id}`} style={{
           display: "flex",
           flexDirection: "row",
           justifyContent: "flex-end",
           gap: "10px",
           width: "100%",
           maxWidth: "400px",
-        }}>
+        }}
+        initial={initRowItem}
+        animate={animateRowItem}
+        exit={exitRowItem}
+        transition={transitionRowItem}
+        >
           <span style={{
             textOverflow: "ellipsis",
             overflowX: "hidden",
@@ -77,26 +124,26 @@ const App = () => {
             minWidth: "80px",
             width: "80px",
             flex: "0 0 80px",
-          }}><Countdown 
-            date={Date.now() + donationToSeconds(dispensing.amountDisplay)*1000}
-            intervalDelay={0}
-            precision={2}
-            renderer={(props) => <span>{(Math.floor(props.total) / 1000).toFixed(2)}s</span>}
-          /></span>
-        </div>
+          }}>{dispensingCountdown}</span>
+        </motion.div>
 
         }
-        {queuedDonations?.map((donation: Donation) => {
+        {nondispensing?.map((donation: Donation) => {
           const time = Math.floor(donationToSeconds(donation.amountDisplay) * 100) / 100;
 
-          return <div key={`donation-row-${donation.id}`} style={{
+          return <motion.div key={`donation-row-${donation.id}`} style={{
           display: "flex",
           flexDirection: "row",
           justifyContent: "flex-end",
           gap: "10px",
           width: "100%",
           maxWidth: "400px",
-        }}>
+        }}
+        initial={initRowItem}
+        animate={animateRowItem}
+        exit={exitRowItem}
+        transition={transitionRowItem}
+        >
           <span style={{
             textOverflow: "ellipsis",
             overflowX: "hidden",
@@ -113,8 +160,8 @@ const App = () => {
             width: "80px",
             flex: "0 0 80px",
           }}>{time.toFixed(2)}s</span>
-        </div>
-        })}
+        </motion.div>
+        })}</AnimatePresence>
       </div>
     </DashboardThemeProvider>
   );

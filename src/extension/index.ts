@@ -54,14 +54,14 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 		}
 		eventQueue.enqueue(a);
 		nodecg.sendMessage("updatequeue");
-		queuedDonationsRep.value = [...eventQueue]
-	}, 10000);
+		queuedDonationsRep.value = [...eventQueue];
+	}, 4000);
 
 	processDunks(queuedDonationsRep, usedDonationIdsRep);
 
 	nodecg.listenFor("updatequeue", () => {
-		console.log("hitting here:", [...eventQueue])
-		queuedDonationsRep.value = [...eventQueue]
+		console.log("hitting here:", [...eventQueue]);
+		queuedDonationsRep.value = [...eventQueue];
 	})
 
 };
