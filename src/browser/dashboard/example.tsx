@@ -96,7 +96,13 @@ const App = () => {
       }}>
         <AnimatePresence>
         {
-          dispensing && <motion.div key={`donation-row-${dispensing.id}`} style={{
+          dispensing && <motion.div key={`donation-row-hbox-${dispensing.id}`}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+          >
+          <motion.div key={`donation-row-${dispensing.id}`} style={{
           display: "flex",
           flexDirection: "row",
           justifyContent: "flex-end",
@@ -126,12 +132,19 @@ const App = () => {
             flex: "0 0 80px",
           }}>{dispensingCountdown}</span>
         </motion.div>
+        </motion.div>
 
         }
         {nondispensing?.map((donation: Donation) => {
           const time = Math.floor(donationToSeconds(donation.amountDisplay) * 100) / 100;
 
-          return <motion.div key={`donation-row-${donation.id}`} style={{
+          return <motion.div key={`donation-row-hbox-${donation.id}`}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+          >
+          <motion.div key={`donation-row-${donation.id}`} style={{
           display: "flex",
           flexDirection: "row",
           justifyContent: "flex-end",
@@ -160,6 +173,7 @@ const App = () => {
             width: "80px",
             flex: "0 0 80px",
           }}>{time.toFixed(2)}s</span>
+        </motion.div>
         </motion.div>
         })}</AnimatePresence>
       </div>
