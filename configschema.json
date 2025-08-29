@@ -3,9 +3,21 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "exampleProperty": {
+    "MOONDUNK_RATE": {
+      "type": "string"
+    },
+    "MOONDUNK_VOLUME": {
+      "type": "string"
+    },
+    "MOONDUNK_GOAL": {
+      "type": "string"
+    },
+    "MOONDUNK_PIN": {
+      "type": "string"
+    },
+    "MOONDUNK_DEBUG": {
       "type": "string"
     }
   },
-  "required": ["exampleProperty"]
+  "required": []
 }

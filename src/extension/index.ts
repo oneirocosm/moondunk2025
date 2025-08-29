@@ -7,30 +7,15 @@ import {randomUUID} from "crypto";
 import GpioDebug from "./debug-tools"
 
 let Gpio = GpioDebug;
-if (process.env["MOONDUNK_DEBUG"] !== "false") {
-	async function install() {
-		try{
-			const GpioActual = await import("onoff");
-			// @ts-ignore
-			Gpio = GpioActual
-		} catch (e) {
-			console.log("could not use onoff library")
-		}
-	}
-	install();
-}
 
-// you can change this stuff for setup
-const WATER_RATE = parseFloat(process.env["MOONDUNK_RATE"] as string ?? "1"); // estimated gallons_per_second
-const BUCKET_VOLUME = parseFloat(process.env["MOONDUNK_VOLUME"] as string ?? "1"); // estemated gallons
-const DOLLAR_GOAL = parseFloat(process.env["MOONDUNK_GOAL"] as string ?? "1"); // estimated USD per dunk
-
-// but don't change these unless something has gone very wrong
-const TIME_PER_DOLLAR = BUCKET_VOLUME / (WATER_RATE * DOLLAR_GOAL);
+let WATER_RATE = 1;
+let BUCKET_VOLUME = 1;
+let DOLLAR_GOAL = 1;
+let TIME_PER_DOLLAR = BUCKET_VOLUME / (WATER_RATE * DOLLAR_GOAL);
 const MS_PER_S = 1000.0;
 
 const eventQueue = new Queue<Donation>();
-const solenoidCtrl = new Gpio(Number(process.env["MOONDUNK_PIN"]), 'out');
+let solenoidCtrl = new Gpio(Number(process.env["MOONDUNK_PIN"]), 'out');
 
 export default async function (nodecg: NodeCG.ServerAPI) {
 	nodecg.log.info("Hello, from your bundle's extension!");
@@ -41,6 +26,7 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 			'src/extension',
 		)}" in your favorite text editor or IDE.`,
 	);
+	await load(nodecg);
 
 
 	const queuedDonationsRep = nodecg.Replicant<Array<Donation>>("queueddonations");
@@ -134,4 +120,21 @@ async function timer(time: number, fn: (time: number) => void, step: number) {
 
 async function sleep(time: number) {
 	return new Promise(r => setTimeout(r, time));
+}
+
+async function load(nodecg: NodeCG.ServerAPI) {
+	WATER_RATE = parseFloat(nodecg.bundleConfig["MOONDUNK_RATE"] as string ?? "1"); // estimated gallons_per_second
+	BUCKET_VOLUME = parseFloat(nodecg.bundleConfig["MOONDUNK_VOLUME"] as string ?? "1"); // estemated gallons
+	DOLLAR_GOAL = parseFloat(nodecg.bundleConfig["MOONDUNK_GOAL"] as string ?? "1"); // estimated USD per dunk
+	TIME_PER_DOLLAR = BUCKET_VOLUME / (WATER_RATE * DOLLAR_GOAL);
+	if (nodecg.bundleConfig["MOONDUNK_DEBUG"] === "true") {
+		try{
+			const GpioActual = await import("onoff");
+			// @ts-ignore
+			Gpio = GpioActual.Gpio
+		} catch (e) {
+			console.log("could not use onoff library")
+		}
+	}
+	solenoidCtrl = new Gpio(Number(nodecg.bundleConfig["MOONDUNK_PIN"]), 'out');
 }
