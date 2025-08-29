@@ -4,6 +4,11 @@ import "dotenv/config";
 import {Queue} from "elegant-queue";
 import {randomUUID} from "crypto";
 
+interface TwitchSub {
+	user_name: string;
+	user_id: string;
+}
+
 import GpioDebug from "./debug-tools"
 
 let Gpio = GpioDebug;
@@ -31,6 +36,7 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 
 	const queuedDonationsRep = nodecg.Replicant<Array<Donation>>("queueddonations");
 	const usedDonationIdsRep = nodecg.Replicant<Array<string>>("useddonationids");
+	const twitchSubsRep = nodecg.Replicant<Array<TwitchSub>>("twitchsubs");
 
 	const allDonationsRep = nodecg.Replicant<Array<Donation>>("alldonations", "tiltify-nodecg");
 	allDonationsRep.on('change', (newValue: Array<Donation> | undefined, oldValue: Array<Donation> | undefined) => {
@@ -42,8 +48,14 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 			}
 			eventQueue.enqueue(donation);
 		}
-		// event to update queue replicant
-		nodecg.sendMessage("updatequeue");
+	});
+
+	nodecg.listenFor("subscription", "twitch-bundle", (message: TwitchSub) => {
+		if (twitchSubsRep.value == undefined) {
+			twitchSubsRep.value = [message];
+		} else {
+			twitchSubsRep.value = [...twitchSubsRep.value, message];
+		}
 	});
 
 	setInterval(() => {
@@ -53,16 +65,11 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 			amountDisplay: 25.10,
 		}
 		eventQueue.enqueue(a);
-		nodecg.sendMessage("updatequeue");
 		queuedDonationsRep.value = [...eventQueue];
 	}, 10000);
 
 	processDunks(queuedDonationsRep, usedDonationIdsRep);
 
-	nodecg.listenFor("updatequeue", () => {
-		console.log("hitting here:", [...eventQueue]);
-		queuedDonationsRep.value = [...eventQueue];
-	})
 
 };
 
@@ -72,7 +79,6 @@ async function processDunks(queuedDonationsRep: NodeCG.ServerReplicant<Array<Don
     		const donation = eventQueue.peek();
  	    	await processNext(donation);
 			// event to update queue replicant
-			//nodecg?.sendMessage("updatequeue");
     		eventQueue.dequeue();
 			queuedDonationsRep.value = [...eventQueue];
 			usedDonationIdsRep.value = [...usedDonationIdsRep?.value ?? [], donation.id];
