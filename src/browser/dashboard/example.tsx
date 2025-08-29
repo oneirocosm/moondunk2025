@@ -5,29 +5,42 @@ import { DashboardThemeProvider } from './components/DashboardThemeProvider';
 import React from "react";
 import Countdown from "react-countdown";
 import { motion, AnimatePresence } from 'framer-motion';
-
 import { render } from '../render';
+
+const MOONSHOT_CORE_DARK = '#040328';
+const MOONSHOT_CORE_PINK = '#D50078';
+const MOONSHOT_CORE_YELLOW = '#FFEE83';
+const MOONSHOT_EXTRA_DARK_BLUE = '#1B1971';
+const MOONSHOT_EXTRA_BLUE = '#467BF8';
+const MOONSHOT_EXTRA_LIGHT_BLUE = '#A8BDF0';
+const MOONSHOT_EXTRA_BURGUNDY = '#990066';
+const MOONSHOT_EXTRA_PINK = '#FCACC7';
+const MOONSHOT_EXTRA_ORANGE = '#E68600';
+const MOONSHOT_EXTRA_GOLD = '#FFC022';
 
 const initRowItem = {
   opacity: 0,
   y: 16,
   scale: 0.98,
   filter: 'blur(4px)',
+  boxShadow: `0 0 0 0 transparent`,
 };
 const animateRowItem = {
   opacity: 1,
   y: 0,
   scale: 1,
   filter: 'blur(0px)',
+  boxShadow: `0 0 0 0 transparent`,
 };
 const exitRowItem = {
   opacity: 0,
   y: -16,
   scale: 0.98,
   filter: 'blur(4px)',
+  boxShadow: `0 0 0 0 transparent`,
 };
 const transitionRowItem = {
-  duration: 0.3,
+  duration: 0.5,
   ease: "easeOut",
 };
 
@@ -65,15 +78,21 @@ const App = () => {
   return (
     <DashboardThemeProvider>
       <div style={{
+        backgroundColor: MOONSHOT_CORE_DARK,
+        width: "100%",
+        maxWidth: "400px",
+        padding: "14px",
+        borderRadius: "10px",
+        border: `solid 3px ${MOONSHOT_CORE_YELLOW}`,
+      }}>
+      <div style={{
         display: "flex",
         flexDirection: "row",
         justifyContent: "flex-end",
-        width: "100%",
-        maxWidth: "400px",
         fontWeight: 600,
         gap: "10px",
         borderBottom: "solid 3px white",
-        marginBottom: "2px",
+        marginBottom: "10px",
       }}>
         <span style={{
           flex: "1 1 auto",
@@ -92,7 +111,8 @@ const App = () => {
       </div>
       <div style={{
         display: "flex",
-        flexDirection: "column"
+        flexDirection: "column",
+        gap: "10px",
       }}>
         <AnimatePresence>
         {
@@ -100,7 +120,7 @@ const App = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
+            transition={{ duration: 0.7, ease: 'easeOut' }}
           >
           <motion.div key={`donation-row-${dispensing.id}`} style={{
           display: "flex",
@@ -109,9 +129,12 @@ const App = () => {
           gap: "10px",
           width: "100%",
           maxWidth: "400px",
+          borderRadius: "7px",
+          padding: "2px",
+          transformOrigin: "center left",
         }}
         initial={initRowItem}
-        animate={animateRowItem}
+        animate={{...animateRowItem, boxShadow: `0 0 0 3px ${MOONSHOT_CORE_PINK}`, fontSize: "22px", fontWeight: 600, backgroundColor: MOONSHOT_EXTRA_DARK_BLUE, color: MOONSHOT_EXTRA_GOLD}}
         exit={exitRowItem}
         transition={transitionRowItem}
         >
@@ -135,7 +158,7 @@ const App = () => {
         </motion.div>
 
         }
-        {nondispensing?.map((donation: Donation) => {
+        {nondispensing?.map((donation: Donation, idx) => {
           const time = Math.floor(donationToSeconds(donation.amountDisplay) * 100) / 100;
 
           return <motion.div key={`donation-row-hbox-${donation.id}`}
@@ -151,9 +174,10 @@ const App = () => {
           gap: "10px",
           width: "100%",
           maxWidth: "400px",
+          backgroundColor: idx % 2 == 0 ? "inherit" : '#040348'
         }}
         initial={initRowItem}
-        animate={animateRowItem}
+        animate={{...animateRowItem, }}
         exit={exitRowItem}
         transition={transitionRowItem}
         >
@@ -176,6 +200,7 @@ const App = () => {
         </motion.div>
         </motion.div>
         })}</AnimatePresence>
+      </div>
       </div>
     </DashboardThemeProvider>
   );

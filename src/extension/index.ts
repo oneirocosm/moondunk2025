@@ -49,7 +49,7 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 	setInterval(() => {
 		let a: Donation = {
 			id: randomUUID(),
-			donor_name: "Jacqueline Swampert Test",
+			donor_name: randomUUID(),
 			amountDisplay: 5.10,
 		}
 		eventQueue.enqueue(a);
