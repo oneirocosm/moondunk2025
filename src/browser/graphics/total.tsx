@@ -8,6 +8,7 @@ import './css/style.css';
 import totalBucket from "./components/total-bucket.png";
 import Wave from "react-wavify";
 import { useIncrementNumber } from './components/useIncrementNumber';
+import Splash from './components/Splash';
 
 const MOONSHOT_CORE_DARK = '#040328';
 const MOONSHOT_EXTRA_LIGHT_BLUE = '#A8BDF0';
