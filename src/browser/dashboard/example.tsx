@@ -7,6 +7,7 @@ import Countdown from "react-countdown";
 import { motion, AnimatePresence } from 'framer-motion';
 import { render } from '../render';
 import './css/style.css';
+import {randomUUID} from "crypto";
 
 const MOONSHOT_CORE_DARK = '#040328';
 const MOONSHOT_CORE_PINK = '#D50078';
@@ -55,6 +56,9 @@ const App = () => {
   const [dispensing, setDispensing] = React.useState<Donation | undefined>(undefined);
   const [nondispensing, setNondispensing] = React.useState<Array<Donation>>([]);
   const [twitchSubs, setTwitchSubs] = useReplicant<Array<TwitchSub>>("twitchsubs");
+  const [manualDonoName, setManualDonoName] = React.useState<string>("");
+  const [manualDonoAmount, setManualDonoAmount] = React.useState<string>("");
+  const [overriddenTotal, setOverriddenTotal] = React.useState<number>(0);
 
   React.useEffect(() => {
     if (queuedDonations == undefined || queuedDonations.length == 0) {
@@ -80,6 +84,21 @@ const App = () => {
   }, [dispensing?.id])
 
 
+  const manualEntry = () => {
+    let numAmount = parseFloat(manualDonoAmount);
+    if (isNaN(numAmount)) {
+      numAmount = 0;
+    }
+    const manualDono: Donation = {
+      id: String(Math.floor(Math.random()*100000)),
+      donor_name: manualDonoName,
+      amountDisplay: numAmount,
+    }
+
+    nodecg.sendMessage("manualdono", manualDono);
+    setManualDonoName("");
+    setManualDonoAmount("");
+  }
 
   return (
     <DashboardThemeProvider>
@@ -154,6 +173,8 @@ const App = () => {
         width: "100%",
         maxWidth: "400px",
         minHeight: "200px",
+        maxHeight: "600px",
+        overflowY: "hidden",
         padding: "14px",
         borderRadius: "10px",
         border: `solid 3px ${MOONSHOT_CORE_YELLOW}`,
@@ -278,6 +299,15 @@ const App = () => {
         </motion.div>
         })}</AnimatePresence>
       </div>
+      </div>
+      <div style={{
+        display: "flex",
+        flexDirection: "column",
+      }}>
+      <span>Manual Donation Input</span>
+        <div><span>Name:&nbsp;</span><input style={{width: 200}} value={manualDonoName} onChange={(e) => setManualDonoName(e.currentTarget.value)}/></div>
+        <div><span>Amount:&nbsp;</span><input style={{width: 200}} value={manualDonoAmount} onChange={(e) => setManualDonoAmount(e.currentTarget.value)}/></div>
+        <button type="submit" style={{width: 100}} onClick={() => manualEntry()}>Submit</button>
       </div>
     </DashboardThemeProvider>
   );

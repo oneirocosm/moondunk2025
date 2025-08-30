@@ -48,6 +48,7 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 				continue;
 			}
 			eventQueue.enqueue(donation);
+			queuedDonationsRep.value = [...eventQueue];
 		}
 	});
 
@@ -58,6 +59,12 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 			twitchSubsRep.value = [...twitchSubsRep.value, message];
 		}
 	});
+
+	nodecg.listenFor("manualdono", (manualDono: Donation) => {
+		console.log("i was here")
+		eventQueue.enqueue(manualDono);
+		queuedDonationsRep.value = [...eventQueue];
+	})
 
 	/*
 	let delay = 0;
