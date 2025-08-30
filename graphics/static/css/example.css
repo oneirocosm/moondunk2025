@@ -1,0 +1,77 @@
+.test-class {
+  background-color: green;
+}
+
+@font-face {
+  font-family: Exo2;
+  src: url(/bundles/moondunk2025/graphics/static/font/Exo2-Thin.e1c1e7bf.ttf);
+  font-style: normal;
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: Exo2;
+  src: url(/bundles/moondunk2025/graphics/static/font/Exo2-ThinItalic.22c03119.ttf);
+  font-style: italic;
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: Exo2;
+  src: url(/bundles/moondunk2025/graphics/static/font/Exo2-Regular.14b90da0.ttf);
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Exo2;
+  src: url(/bundles/moondunk2025/graphics/static/font/Exo2-Italic.f01f24eb.ttf);
+  font-style: italic;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Exo2;
+  src: url(/bundles/moondunk2025/graphics/static/font/Exo2-Bold.641a98e5.ttf);
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: Exo2;
+  src: url(/bundles/moondunk2025/graphics/static/font/Exo2-BoldItalic.8e10de35.ttf);
+  font-style: italic;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: Exo2;
+  src: url(/bundles/moondunk2025/graphics/static/font/Exo2-Black.ecda3210.ttf);
+  font-style: normal;
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: Exo2;
+  src: url(/bundles/moondunk2025/graphics/static/font/Exo2-BlackItalic.06283175.ttf);
+  font-style: italic;
+  font-weight: 900;
+}
+
+#tsparticles {
+  background-image: url("");
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+}
+
+.body-particles {
+  z-index: 100;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+

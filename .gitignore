@@ -24,9 +24,6 @@ dist-ssr
 *.sw?
 
 # Built files
-extension/*
-dashboard/*
-graphics/*
 vite.config.mts.*
 
 # NodeCG runtime files
