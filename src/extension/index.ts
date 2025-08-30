@@ -77,11 +77,24 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 			fakeTotalRep.value += a.amountDisplay;
 		}
 	}, 3000);
+
+	let delay2 = 0;
+	setInterval(async () => {
+		let b: TwitchSub = {
+			user_id: randomUUID(),
+			user_name: randomUUID(),
+		};
+		await sleep(delay2 * 1000);
+		delay2 = (delay2 + 1 )% 20 ;
+		if (twitchSubsRep?.value == undefined) {
+			twitchSubsRep.value = [b];
+		} else {
+			twitchSubsRep.value = [...twitchSubsRep.value, b]
+		}
+	}, 3000);
 	*/
 
 	processDunks(queuedDonationsRep, usedDonationIdsRep);
-
-
 };
 
 async function processDunks(queuedDonationsRep: NodeCG.ServerReplicant<Array<Donation>>, usedDonationIdsRep: NodeCG.ServerReplicant<Array<string>>) {

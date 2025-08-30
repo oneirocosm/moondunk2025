@@ -45,11 +45,16 @@ const transitionRowItem = {
   ease: "easeOut",
 };
 
+interface TwitchSub {
+	user_name: string;
+	user_id: string;
+}
 
 const App = () => {
   const [queuedDonations, _] = useReplicant<Array<Donation>>('queueddonations');
   const [dispensing, setDispensing] = React.useState<Donation | undefined>(undefined);
   const [nondispensing, setNondispensing] = React.useState<Array<Donation>>([]);
+  const [twitchSubs, setTwitchSubs] = useReplicant<Array<TwitchSub>>("twitchsubs");
 
   React.useEffect(() => {
     if (queuedDonations == undefined || queuedDonations.length == 0) {
@@ -78,6 +83,72 @@ const App = () => {
 
   return (
     <DashboardThemeProvider>
+      <div style={{
+        backgroundColor: MOONSHOT_CORE_DARK,
+        width: "100%",
+        maxWidth: "400px",
+        minHeight: "200px",
+        padding: "14px",
+        borderRadius: "10px",
+        border: `solid 3px ${MOONSHOT_CORE_PINK}`,
+        color: MOONSHOT_CORE_PINK,
+        fontFamily: "Exo2",
+        marginBottom: 20,
+      }}>
+      <div style={{width: "100%", borderBottom: `solid 3px ${MOONSHOT_CORE_PINK}`, fontWeight: 600}}>Twitch Subs</div>
+      <div style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px",
+        maxHeight: "400px",
+        overflowY: "hidden",
+      }}>
+        <AnimatePresence>
+        {twitchSubs?.map((sub: TwitchSub, idx) => {
+
+          return <motion.div key={`twitch-sub-hbox-${sub.user_id}`}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+          >
+          <motion.div key={`twitch-sub-row-${sub.user_id}`} style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "flex-end",
+          gap: "10px",
+          width: "100%",
+          maxWidth: "400px",
+          backgroundColor: idx % 2 == 0 ? "inherit" : '#040348'
+        }}
+        initial={initRowItem}
+        animate={{...animateRowItem, }}
+        exit={exitRowItem}
+        transition={transitionRowItem}
+        >
+          <span style={{
+            textOverflow: "ellipsis",
+            overflowX: "hidden",
+            whiteSpace: "nowrap",
+            flexGrow: 1,
+          }}>{sub.user_name}</span>
+          <Button style={{
+            minWidth: "80px",
+            width: "80px",
+            height: "80%",
+            flex: "0 0 80px",
+            backgroundColor: "red",
+            color: "white",
+          }}
+          onClick={() => setTwitchSubs(twitchSubs?.filter((arbSub) => arbSub.user_id != sub.user_id))}
+          >&times;</Button>
+        </motion.div>
+        </motion.div>
+        })}
+        </AnimatePresence>
+        </div>
+        </div>
+
       <div style={{
         backgroundColor: MOONSHOT_CORE_DARK,
         width: "100%",
