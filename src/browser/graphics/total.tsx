@@ -14,11 +14,18 @@ const MOONSHOT_EXTRA_LIGHT_BLUE = '#A8BDF0';
 const MOONSHOT_CORE_YELLOW = '#FFEE83';
 const MOONSHOT_EXTRA_GOLD = '#FFC022';
 
+type WaterfallInfo = {
+    id: string;
+    top: number;
+    height: number;
+}
+
 const App = () => {
   const [queuedDonations, _] = useReplicant<Array<Donation>>('queueddonations');
   const [total, setTotal] = useReplicant<number>("total", {bundle: "nodecg-tiltify"});
   const [dispensing, setDispensing] = React.useState<Donation | undefined>(undefined);
   const totalDisplay = useIncrementNumber(total ?? 0);
+  const [waterfallSegments, setWaterfallSegments] = React.useState<Array<WaterfallInfo>>([]);
 
   const yScaleFactor = React.useMemo(() => {
     const target = nodecg.bundleConfig.MOONDUNK_TARGET ?? 2000;
@@ -43,10 +50,43 @@ const App = () => {
         return;
     };
 
+    const newSegment: WaterfallInfo = {
+        id: dispensing.id,
+        top: 68,
+        height: 0,
+    };
 
+
+    setWaterfallSegments((current) => [...current, newSegment])
   }, [dispensing?.id])
 
   const waveBottom = 45 + 22.5 * yScaleFactor;
+
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+        setWaterfallSegments((current) => {
+            const newSegments = current.map((segment) => {
+                if (segment.id == dispensing?.id) {
+                    return {...segment, height: Math.min(segment.height + 2, 1012 - waveBottom)}
+                }
+                if (segment.top + segment.height < 1078 - waveBottom) {
+                    return {...segment, top: Math.max(0, segment.top + 2)}
+                }
+                return {
+                    id: segment.id,
+                    top: Math.max(0, segment.top + 2),
+                    height: Math.max(0, segment.height - 2),
+                }
+            }); 
+            return newSegments.filter((segment) => segment.height != 0);
+    })
+    }, 5);
+
+    return () => clearTimeout(timeout);
+  }, [waterfallSegments, dispensing?.id])
+
+
+
   return <div style={{
       position: "absolute",
       background: `url(${totalBucket})`,
@@ -161,6 +201,16 @@ const App = () => {
             fontSize: 34,
             color: MOONSHOT_EXTRA_GOLD,
         }}>${totalDisplay}</span>
+        {waterfallSegments.map((segmentInfo) => <div key={`waterfall-segment-${segmentInfo.id}`} style={{
+            position: "absolute",
+            background: "red",
+            width: 10,
+            height: segmentInfo.height,
+            top: segmentInfo.top,
+            left: 95,
+            zIndex: 1,
+            transformOrigin: "top left",
+        }}/>)}
     </div>
 }
 

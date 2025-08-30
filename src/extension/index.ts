@@ -62,11 +62,11 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 		let a: Donation = {
 			id: randomUUID(),
 			donor_name: randomUUID(),
-			amountDisplay: 25.10,
+			amountDisplay: 5.10,
 		}
 		eventQueue.enqueue(a);
 		queuedDonationsRep.value = [...eventQueue];
-	}, 10000);
+	}, 3000);
 
 	processDunks(queuedDonationsRep, usedDonationIdsRep);
 
