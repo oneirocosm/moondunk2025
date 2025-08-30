@@ -24,8 +24,8 @@ type WaterfallInfo = {
 
 const App = () => {
   const [queuedDonations, _] = useReplicant<Array<Donation>>('queueddonations');
-  //const [total, setTotal] = useReplicant<number>("total", {bundle: "nodecg-tiltify"});
-  const [total, setTotal] = useReplicant<number>("faketotal");
+  const [total, setTotal] = useReplicant<number>("total", {bundle: "nodecg-tiltify"});
+  //const [total, setTotal] = useReplicant<number>("faketotal");
   const [dispensing, setDispensing] = React.useState<Donation | undefined>(undefined);
   const [delayedTotal, setDelayedTotal] = React.useState<number>(total ?? 0);
   const totalDisplay = Math.floor(useIncrementNumber(delayedTotal ?? 0));

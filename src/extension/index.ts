@@ -59,6 +59,7 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 		}
 	});
 
+	/*
 	let delay = 0;
 	setInterval(async () => {
 		let a: Donation = {
@@ -76,6 +77,7 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 			fakeTotalRep.value += a.amountDisplay;
 		}
 	}, 3000);
+	*/
 
 	processDunks(queuedDonationsRep, usedDonationIdsRep);
 
@@ -94,7 +96,6 @@ async function processDunks(queuedDonationsRep: NodeCG.ServerReplicant<Array<Don
  		}
 		await sleep(100);
 	}
-    //setTimeout(processDunks, 100, [nodecg, usedDonationIdsRep]);
 }
 
 async function processNext(event: Donation) {
