@@ -26,21 +26,26 @@ const App = () => {
   const [queuedDonations, _] = useReplicant<Array<Donation>>('queueddonations');
   const [total, setTotal] = useReplicant<number>("total", {bundle: "nodecg-tiltify"});
   //const [total, setTotal] = useReplicant<number>("faketotal");
+  const [overriddenTotal, setOverriddenTotal] = useReplicant<number>("overriddentotal");
   const [dispensing, setDispensing] = React.useState<Donation | undefined>(undefined);
   const [delayedTotal, setDelayedTotal] = React.useState<number>(total ?? 0);
   const totalDisplay = Math.floor(useIncrementNumber(delayedTotal ?? 0));
   const [waterfallSegments, setWaterfallSegments] = React.useState<Array<WaterfallInfo>>([]);
   const [trackingTotal, setTrackingTotal] = React.useState<number>(total ?? 0);
 
+  const combinedTotal: number = React.useMemo(() => {
+    return overriddenTotal || (total ?? 0); 
+  }, [total, overriddenTotal])
+
   // this can be buggy but it is necessary in a reset
   React.useEffect(() => {
-    if (waterfallSegments.length == 0 && total != undefined) {
-        setTrackingTotal(total);
-        setDelayedTotal(total);
+    if (waterfallSegments.length == 0 && combinedTotal != undefined) {
+        setTrackingTotal(combinedTotal);
+        setDelayedTotal(combinedTotal);
     }
-    if (total != undefined && Math.abs(total - delayedTotal) > 100) {
-        setTrackingTotal(total);
-        setDelayedTotal(total);
+    if (combinedTotal != undefined && Math.abs(combinedTotal - delayedTotal) > 100) {
+        setTrackingTotal(combinedTotal);
+        setDelayedTotal(combinedTotal);
     }
   }, [waterfallSegments.length])
 
@@ -95,7 +100,7 @@ const App = () => {
                 const cyclesRemaining = Math.max(Math.floor(segment.height / 2), 1);
                 const difference = Math.max(0, segment.expectedAmount - delayedTotal);
                 const dAmount = difference / cyclesRemaining;
-                setDelayedTotal((current) => Math.min(current + dAmount, total ??0))
+                setDelayedTotal((current) => Math.min(current + dAmount, combinedTotal ??0))
                 return {
                     ...segment,
                     top: Math.max(0, segment.top + 2),

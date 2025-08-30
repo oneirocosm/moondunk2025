@@ -59,6 +59,7 @@ const App = () => {
   const [manualDonoName, setManualDonoName] = React.useState<string>("");
   const [manualDonoAmount, setManualDonoAmount] = React.useState<string>("");
   const [overriddenTotal, setOverriddenTotal] = React.useState<number>(0);
+  const [overriddenTotalOut, setOverriddenTotalOut] = useReplicant<number>("overriddentotal");
 
   React.useEffect(() => {
     if (queuedDonations == undefined || queuedDonations.length == 0) {
@@ -98,6 +99,10 @@ const App = () => {
     nodecg.sendMessage("manualdono", manualDono);
     setManualDonoName("");
     setManualDonoAmount("");
+  }
+
+  const manualTotal = () => {
+    setOverriddenTotalOut(overriddenTotal);
   }
 
   return (
@@ -303,11 +308,21 @@ const App = () => {
       <div style={{
         display: "flex",
         flexDirection: "column",
+        marginBottom: "20px",
       }}>
       <span>Manual Donation Input</span>
         <div><span>Name:&nbsp;</span><input style={{width: 200}} value={manualDonoName} onChange={(e) => setManualDonoName(e.currentTarget.value)}/></div>
         <div><span>Amount:&nbsp;</span><input style={{width: 200}} value={manualDonoAmount} onChange={(e) => setManualDonoAmount(e.currentTarget.value)}/></div>
         <button type="submit" style={{width: 100}} onClick={() => manualEntry()}>Submit</button>
+      </div>
+      <div style={{
+        display: "flex",
+        flexDirection: "column",
+        marginBottom: "20px",
+      }}>
+      <span>Manual Total Input</span>
+        <div><span>Total:&nbsp;</span><input type="number" style={{width: 200}} value={overriddenTotal} onChange={(e) => setOverriddenTotal(Number(e.currentTarget.value))}/></div>
+        <button type="submit" style={{width: 100}} onClick={() => manualTotal()}>Submit</button>
       </div>
     </DashboardThemeProvider>
   );
