@@ -17,6 +17,9 @@
     },
     "MOONDUNK_DEBUG": {
       "type": "boolean"
+    },
+    "MOONDUNK_TARGET": {
+      "type": "number"
     }
   },
   "required": []

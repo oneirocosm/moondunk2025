@@ -12,4 +12,5 @@ export interface Configschema {
 	MOONDUNK_GOAL?: number;
 	MOONDUNK_PIN?: number;
 	MOONDUNK_DEBUG?: boolean;
+	MOONDUNK_TARGET?: number;
 }

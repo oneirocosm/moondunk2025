@@ -28,12 +28,14 @@
     "dotenv": "^17.2.1",
     "elegant-queue": "^1.0.8",
     "framer-motion": "^12.23.12",
+    "gsap": "^3.13.0",
     "lodash": "^4.17.21",
     "nodecg": "^2.5.3",
     "onoff": "^6.0.3",
     "react": "^18.2.0",
     "react-countdown": "^2.3.6",
     "react-dom": "^18.2.0",
+    "react-wavify": "^1.11.1",
     "styled-components": "6.0.0-rc.3"
   },
   "devDependencies": {
@@ -85,6 +87,11 @@
         "file": "queue.html",
         "width": 369,
         "height": 485
+      },
+      {
+        "file": "total.html",
+        "width": 208,
+        "height": 1080
       }
     ]
   }
