@@ -133,6 +133,17 @@ const App = () => {
             opacity: 0.9,
             zIndex: -1,
         }}/>
+        <div style={{
+            position: "absolute",
+            transformOrigin: "bottom left",
+            left: 90,
+            bottom: 45,
+            width: 100,
+            height: 22,
+            backgroundColor: MOONSHOT_EXTRA_LIGHT_BLUE,
+            opacity: 0.9,
+            zIndex: -1,
+        }}/>
         <Wave fill={MOONSHOT_EXTRA_LIGHT_BLUE}
           paused={false}
           style={{
