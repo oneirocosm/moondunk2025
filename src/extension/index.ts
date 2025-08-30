@@ -37,6 +37,7 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 	const queuedDonationsRep = nodecg.Replicant<Array<Donation>>("queueddonations");
 	const usedDonationIdsRep = nodecg.Replicant<Array<string>>("useddonationids");
 	const twitchSubsRep = nodecg.Replicant<Array<TwitchSub>>("twitchsubs");
+	const fakeTotalRep = nodecg.Replicant<number>("faketotal");
 
 	const allDonationsRep = nodecg.Replicant<Array<Donation>>("alldonations", "tiltify-nodecg");
 	allDonationsRep.on('change', (newValue: Array<Donation> | undefined, oldValue: Array<Donation> | undefined) => {
@@ -58,14 +59,22 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 		}
 	});
 
-	setInterval(() => {
+	let delay = 0;
+	setInterval(async () => {
 		let a: Donation = {
 			id: randomUUID(),
 			donor_name: randomUUID(),
 			amountDisplay: 5.10,
 		}
+		await sleep(delay * 1000);
+		delay = (delay + 1 )% 20 ;
 		eventQueue.enqueue(a);
 		queuedDonationsRep.value = [...eventQueue];
+		if (fakeTotalRep?.value == undefined) {
+			fakeTotalRep.value = a.amountDisplay;
+		} else {
+			fakeTotalRep.value += a.amountDisplay;
+		}
 	}, 3000);
 
 	processDunks(queuedDonationsRep, usedDonationIdsRep);

@@ -18,24 +18,40 @@ type WaterfallInfo = {
     id: string;
     top: number;
     height: number;
+    expectedAmount: number
 }
 
 const App = () => {
   const [queuedDonations, _] = useReplicant<Array<Donation>>('queueddonations');
-  const [total, setTotal] = useReplicant<number>("total", {bundle: "nodecg-tiltify"});
+  //const [total, setTotal] = useReplicant<number>("total", {bundle: "nodecg-tiltify"});
+  const [total, setTotal] = useReplicant<number>("faketotal");
   const [dispensing, setDispensing] = React.useState<Donation | undefined>(undefined);
-  const totalDisplay = useIncrementNumber(total ?? 0);
+  const [delayedTotal, setDelayedTotal] = React.useState<number>(total ?? 0);
+  const totalDisplay = Math.floor(useIncrementNumber(delayedTotal ?? 0));
   const [waterfallSegments, setWaterfallSegments] = React.useState<Array<WaterfallInfo>>([]);
+  const [trackingTotal, setTrackingTotal] = React.useState<number>(total ?? 0);
+
+  // this can be buggy but it is necessary in a reset
+  React.useEffect(() => {
+    if (waterfallSegments.length == 0 && total != undefined) {
+        setTrackingTotal(total);
+        setDelayedTotal(total);
+    }
+    if (total != undefined && Math.abs(total - delayedTotal) > 100) {
+        setTrackingTotal(total);
+        setDelayedTotal(total);
+    }
+  }, [waterfallSegments.length])
 
   const yScaleFactor = React.useMemo(() => {
     const target = nodecg.bundleConfig.MOONDUNK_TARGET ?? 2000;
     const minScale = 1;
     const maxScale = 41;
-    const amount = total ?? 0;
+    const amount = delayedTotal ?? 0;
     const ratio = amount / target;
     return Math.max(minScale, Math.min(maxScale, minScale*(1-ratio) + maxScale*ratio))
 
-  }, [total])
+  }, [delayedTotal])
 
   React.useEffect(() => {
     if (queuedDonations == undefined || queuedDonations.length == 0) {
@@ -54,7 +70,9 @@ const App = () => {
         id: dispensing.id,
         top: 68,
         height: 0,
+        expectedAmount: trackingTotal + dispensing.amountDisplay,
     };
+    setTrackingTotal((current) => current + dispensing.amountDisplay);
 
 
     setWaterfallSegments((current) => [...current, newSegment])
@@ -72,8 +90,13 @@ const App = () => {
                 if (segment.top + segment.height < 1078 - waveBottom) {
                     return {...segment, top: Math.max(0, segment.top + 2)}
                 }
+
+                const cyclesRemaining = Math.max(Math.floor(segment.height / 2), 1);
+                const difference = Math.max(0, segment.expectedAmount - delayedTotal);
+                const dAmount = difference / cyclesRemaining;
+                setDelayedTotal((current) => Math.min(current + dAmount, total ??0))
                 return {
-                    id: segment.id,
+                    ...segment,
                     top: Math.max(0, segment.top + 2),
                     height: Math.max(0, segment.height - 2),
                 }
@@ -203,12 +226,12 @@ const App = () => {
         }}>${totalDisplay}</span>
         {waterfallSegments.map((segmentInfo) => <div key={`waterfall-segment-${segmentInfo.id}`} style={{
             position: "absolute",
-            background: "red",
+            background: MOONSHOT_EXTRA_LIGHT_BLUE,
             width: 10,
             height: segmentInfo.height,
             top: segmentInfo.top,
             left: 95,
-            zIndex: 1,
+            zIndex: -1,
             transformOrigin: "top left",
         }}/>)}
     </div>
