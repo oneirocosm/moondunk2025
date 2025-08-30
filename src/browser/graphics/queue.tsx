@@ -77,11 +77,11 @@ const App = () => {
   return (
       <div style={{
         background: `${MOONSHOT_CORE_DARK}`,
-        width: "369px",
-        height: "485px",
+        width: "360px",
+        height: "370px",
         overflowY: "hidden",
         padding: "14px",
-        border: `solid 3px ${MOONSHOT_CORE_YELLOW}`,
+        border: `solid 5px ${MOONSHOT_CORE_YELLOW}`,
         fontFamily: "Exo2",
         color: "white",
         margin: 0,

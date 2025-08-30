@@ -64,7 +64,7 @@ export default async function (nodecg: NodeCG.ServerAPI) {
 		let a: Donation = {
 			id: randomUUID(),
 			donor_name: randomUUID(),
-			amountDisplay: 5.10,
+			amountDisplay: 25.10,
 		}
 		await sleep(delay * 1000);
 		delay = (delay + 1 )% 20 ;
